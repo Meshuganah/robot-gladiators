@@ -5,26 +5,29 @@ var randomNumber = function(min, max) {
     return value;
 }
 
+var fightOrSkip = function() {
+    var promptFight = window.prompt(`Would you like to FIGHT or SKIP this battle?`);
+
+    if (promptFight === "" || promptFight === "null") {
+        window.alert(`Please provide a valid answer.`)
+        return fightOrSkip();
+    }
+
+    if (promptFight.toLowerCase() === "skip") {
+        var confirmSkip = window.confirm(`Are you sure you'd like to quit?`);
+
+        if (confirmSkip) {
+            window.alert(`${playerInfo.name} has decided to skip this fight. Goodbye.`);
+            playerInfo.money = Math.max(0, playerInfo.money - 10);
+            shop();
+        }
+    }
+}
+
 var fight = function(enemy) {
     while(enemy.health > 0 && playerInfo.health > 0) {
-        // Ask player if they'd like to fight or run
-        var promptFight = window.prompt("Would you like to FIGHT or SKIP this battle? Enter FIGHT or SKIP to choose.")
-        
-        // If player picks "skip" confirm and then stop the loop
-        if (promptFight.toUpperCase() === "SKIP") {
-            // Confirm player wants to skip
-            var confirmSkip = window.confirm("Are you sure you'd like to quit?")
-
-            // If yes (true), leave fight
-            if (confirmSkip) {
-            window.alert(`${playerInfo.name} has chosen to skip the fight. Goodbye!`);
-            // Subtract money from playerInfo.money for skipping
-            playerInfo.money = Math.max(0, playerInfo.money - 10);
-            console.log(`Money: ${playerInfo.money}`);
-            break;
-            }
-        }
-
+        fightOrSkip();
+    
         // Calculate damage done to enemy
         var damage = randomNumber(playerInfo.attack -3, playerInfo.attack);
         enemy.health = Math.max(0, enemy.health - damage);
@@ -58,8 +61,8 @@ var fight = function(enemy) {
         } else {
             window.alert(`${playerInfo.name} still has ${playerInfo.health} health remaining!`)
         }
-    } 
-};
+    }
+}
 
 var startGame = function() {
     playerInfo.reset();
