@@ -25,43 +25,70 @@ var fightOrSkip = function() {
 }
 
 var fight = function(enemy) {
-    while(enemy.health > 0 && playerInfo.health > 0) {
-        fightOrSkip();
-    
-        // Calculate damage done to enemy
-        var damage = randomNumber(playerInfo.attack -3, playerInfo.attack);
-        enemy.health = Math.max(0, enemy.health - damage);
-        // Log a resulting message to the console so we know that it worked
-        console.log(
-            `${playerInfo.name} attacked ${enemy.name} for ${damage} damage! ${enemy.name} now has ${enemy.health} remaining!`
-        )
-
-        // Check enemy's health
-        if (enemy.health <= 0) {
-            window.alert(`${enemy.name} has died!`);
-            playerInfo.money = playerInfo.money + 20;
-            break;
+    var isPlayerTurn = function() {
+        if (Math.random > 0.5) {
+            return true;
         } else {
-            window.alert(`${enemy.name} still has ${enemy.health} health left!`)
+            return false;
         }
 
-        // Calculate damage to player
-        var damage = randomNumber(enemy.attack - 3, enemy.attack);
+    }
 
-        playerInfo.health = Math.max(0, playerInfo.health - damage);
-        // Log a resulting message to the console so we know that it worked
-        console.log(
-            `${enemy.name} attacked ${playerInfo.name} for ${damage}. ${playerInfo.name} now has ${playerInfo.health} health remaining.`
-        )
+    while(enemy.health > 0 && playerInfo.health > 0) {
 
-        // Check player health
-        if (playerInfo.health <= 0) {
-            window.alert(`${playerInfo.name} has died!`);
-            break;
+        if (isPlayerTurn()) {
+            if (fightOrSkip()) {
+                break;
+            }
+            playerDamage();
+            enemyDamage();
+            isPlayerTurn();
         } else {
-            window.alert(`${playerInfo.name} still has ${playerInfo.health} health remaining!`)
+            enemyDamage();
+            if (fightOrSkip()) {
+                break;
+            }
+            playerDamage();
+            isPlayerTurn();
         }
     }
+
+
+        function playerDamage() {
+            // Calculate damage done to enemy
+            var damage = randomNumber(playerInfo.attack -3, playerInfo.attack);
+            enemy.health = Math.max(0, enemy.health - damage);
+            // Log a resulting message to the console so we know that it worked
+            console.log(
+                `${playerInfo.name} attacked ${enemy.name} for ${damage} damage! ${enemy.name} now has ${enemy.health} remaining!`
+            )
+
+            // Check enemy's health
+            if (enemy.health <= 0) {
+                window.alert(`${enemy.name} has died!`);
+                playerInfo.money = playerInfo.money + 20;
+            } else {
+                window.alert(`${enemy.name} still has ${enemy.health} health left!`)
+            }
+        }
+    
+        function enemyDamage() {
+            // Calculate damage to player
+            var damage = randomNumber(enemy.attack - 3, enemy.attack);
+
+            playerInfo.health = Math.max(0, playerInfo.health - damage);
+            // Log a resulting message to the console so we know that it worked
+            console.log(
+                `${enemy.name} attacked ${playerInfo.name} for ${damage}. ${playerInfo.name} now has ${playerInfo.health} health remaining.`
+            )
+
+            // Check player health
+            if (playerInfo.health <= 0) {
+                window.alert(`${playerInfo.name} has died!`);
+            } else {
+                window.alert(`${playerInfo.name} still has ${playerInfo.health} health remaining!`)
+            }
+        }   
 }
 
 var startGame = function() {
@@ -190,4 +217,3 @@ var enemyInfo = [
 ];
 
 startGame();
-
